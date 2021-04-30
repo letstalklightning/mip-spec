@@ -1,0 +1,1167 @@
+openapi: 3.0.3
+info:
+  version: 0.1.0
+  title: Metering Information Platform, Provisioning service
+  contact:
+    email: devops@vector.co.nz
+  description: API to ensure that metering asset information is synchronised with external systems
+
+servers:
+  - url: 'https://api.dev.vectormetering.co.nz/service/provisioning'
+    description: Development endpoint
+  - url: 'https://api.test.vectormetering.co.nz/service/provisioning'
+    description: Test endpoint
+  - url: 'https://api.sit.vectormetering.co.nz/service/provisioning'
+    description: System Integration Testing endpoint
+  - url: 'https://api.uat.vectormetering.co.nz/service/provisioning'
+    description: User Acceptance Testing endpoint
+  - url: 'https://api.vectormetering.co.nz/service/provisioning'
+    description: Production endpoint
+
+paths:
+  /connectionpoints/{commodity}:
+    post:
+      operationId: postConnectionPointForCommodity
+      tags:
+        - ConnectionPoint
+      summary: Create a connection point with meters
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/create_connection_point]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/create_connection_point]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/create_connection_point]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/create_connection_point]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/create_connection_point]
+          ApiKeyAuth: []
+          BearerAuth: []
+
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/ConnectionPointCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/ConnectionPointCreateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /connectionpoints/{commodity}/{connectionpointid}:
+    get:
+      operationId: getConnectionPointForCommodity
+      tags:
+        - ConnectionPoint
+      summary: Retrieve a connection points information
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/read_connection_point]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/read_connection_point]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/read_connection_point]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/read_connection_point]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/read_connection_point]
+          ApiKeyAuth: []
+          BearerAuth: []
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/ConnectionPointId'
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        200:
+          $ref: '#/components/responses/ConnectionPointReadSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /connectionpoints/{commodity}/{connectionpointid}/participants/:
+    post:
+      operationId: postParticipantAssociationForConnectionPoint
+      tags:
+        - ConnectionPoint
+      summary: Create a participant association on connection point
+      security:
+        - OAuth2Dev: [ vm-nz-provisioning-srv-dev/create_connection_point_participant ]
+        - OAuth2Test: [ vm-nz-provisioning-srv-test/create_connection_point_participant ]
+        - OAuth2Sit: [ vm-nz-provisioning-srv-sit/create_connection_point_participant ]
+        - OAuth2Uat: [ vm-nz-provisioning-srv-uat/create_connection_point_participant ]
+        - OAuth2Prod: [ vm-nz-provisioning-srv-prod/create_connection_point_participant ]
+          ApiKeyAuth: [ ]
+          BearerAuth: [ ]
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/ConnectionPointId'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/ParticipantCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/ParticipantCreateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /connectionpoints/{commodity}/{connectionpointid}/participants/{participantassociationid}:
+    put:
+      operationId: putParticipantAssociationForConnectionPoint
+      tags:
+        - ConnectionPoint
+      summary: Update a participant association on connection point
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/update_connection_point_participant]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/update_connection_point_participant]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/update_connection_point_participant]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/update_connection_point_participant]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/update_connection_point_participant]
+          ApiKeyAuth: []
+          BearerAuth: []
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/ConnectionPointId'
+        - $ref: '#/components/parameters/ParticipantAssociationId'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/ParticipantUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/ParticipantUpdateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /connectionpoints/{commodity}/{connectionpointid}/meters/{meterassociationid}:
+    put:
+      operationId: putMeterAssociationForConnectionPoint
+      tags:
+        - ConnectionPoint
+      summary: Update a meter association for connection point
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/update_connection_point_meter]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/update_connection_point_meter]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/update_connection_point_meter]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/update_connection_point_meter]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/update_connection_point_meter]
+          ApiKeyAuth: []
+          BearerAuth: []
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/ConnectionPointId'
+        - $ref: '#/components/parameters/MeterAssociationId'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/MeterAssociationUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/MeterAssociationUpdateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /connectionpoints/{commodity}/{connectionpointid}/meters/:
+    post:
+      operationId: postMeterAssociationForConnectionPoint
+      tags:
+        - ConnectionPoint
+      summary: Create a meter association on a connection point
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/create_connection_point_meter]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/create_connection_point_meter]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/create_connection_point_meter]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/create_connection_point_meter]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/create_connection_point_meter]
+          ApiKeyAuth: []
+          BearerAuth: []
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/ConnectionPointId'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/MeterAssociationCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/MeterAssociationCreateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /meters/{commodity}/{manufacturer}:
+    post:
+      operationId: postMeterForCommodityAndManufacturer
+      tags:
+        - Meter
+      summary: Create a meter
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/create_meter]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/create_meter]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/create_meter]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/create_meter]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/create_meter]
+          ApiKeyAuth: []
+          BearerAuth: []
+
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/Manufacturer'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/MeterCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/MeterCreateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+  /meters/{commodity}/{manufacturer}/{serialnumber}:
+    get:
+      operationId: getMeterForCommodityAndManufacturer
+      tags:
+        - Meter
+      summary: Retrieve a meters information
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/read_meter]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/read_meter]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/read_meter]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/read_meter]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/read_meter]
+          ApiKeyAuth: []
+          BearerAuth: []
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/Manufacturer'
+        - $ref: '#/components/parameters/SerialNumber'
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        200:
+          $ref: '#/components/responses/MeterReadSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+    put:
+      operationId: putMeterForCommodityAndManufacturer
+      tags:
+        - Meter
+      summary: Update a meters information
+      security:
+        - OAuth2Dev: [vm-nz-provisioning-srv-dev/update_meter]
+        - OAuth2Test: [vm-nz-provisioning-srv-test/update_meter]
+        - OAuth2Sit: [vm-nz-provisioning-srv-sit/update_meter]
+        - OAuth2Uat: [vm-nz-provisioning-srv-uat/update_meter]
+        - OAuth2Prod: [vm-nz-provisioning-srv-prod/update_meter]
+          ApiKeyAuth: []
+          BearerAuth: []
+      parameters:
+        - in: header
+          name: x-api-version
+          schema:
+            type: number
+          required: true
+        - $ref: '#/components/parameters/Commodity'
+        - $ref: '#/components/parameters/Manufacturer'
+        - $ref: '#/components/parameters/SerialNumber'
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        $ref: '#/components/requestBodies/MeterUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/MeterUpdateSuccess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorised'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        413:
+          $ref: '#/components/responses/BadRequest'
+        429:
+          $ref: '#/components/responses/Throttled'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+        502:
+          $ref: '#/components/responses/BadGateway'
+        503:
+          $ref: '#/components/responses/NotAvailable'
+
+tags:
+  - name: Data Export
+    description: Meter data export operations
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+    OAuth2Dev:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.dev.vectormetering.co.nz/service/security/oauth2/token
+          scopes:
+            vm-nz-provisioning-srv-dev/create_connection_point: Grants read access
+            vm-nz-provisioning-srv-dev/update_connection_point: Grants update access for connection point
+            vm-nz-provisioning-srv-dev/read_connection_point: Grants read access for connection point
+    OAuth2Test:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.test.vectormetering.co.nz/service/security/oauth2/token
+          scopes:
+            vm-nz-provisioning-srv-test/create_connection_point: Grants read access
+            vm-nz-provisioning-srv-test/update_connection_point: Grants update access for connection point
+            vm-nz-provisioning-srv-test/read_connection_point: Grants read access for connection point
+    OAuth2Sit:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.sit.vectormetering.co.nz/service/security/oauth2/token
+          scopes:
+            vm-nz-provisioning-srv-sit/create_connection_point: Grants read access
+            vm-nz-provisioning-srv-sit/update_connection_point: Grants update access for connection point
+            vm-nz-provisioning-srv-sit/read_connection_point: Grants read access for connection point
+    OAuth2Uat:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.uat.vectormetering.co.nz/service/security/oauth2/token
+          scopes:
+            vm-nz-provisioning-srv-uat/create_connection_point: Grants read access
+            vm-nz-provisioning-srv-uat/update_connection_point: Grants update access for connection point
+            vm-nz-provisioning-srv-uat/read_connection_point: Grants read access for connection point
+    OAuth2Prod:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.vectormetering.co.nz/service/security/oauth2/token
+          scopes:
+            vm-nz-provisioning-srv-prod/create_connection_point: Grants read access
+            vm-nz-provisioning-srv-prod/update_connection_point: Grants update access for connection point
+            vm-nz-provisioning-srv-prod/read_connection_point: Grants read access for connection point
+
+  parameters:
+    Commodity:
+      name: commodity
+      in: path
+      description: The targeted commodity type
+      required: true
+      schema:
+        $ref: '#/components/schemas/Commodity'
+    Manufacturer:
+      name: manufacturer
+      in: path
+      description: The targeted manufacturer type for meter
+      required: true
+      schema:
+        $ref: '#/components/schemas/Manufacturer'
+    SerialNumber:
+      name: serialNumber
+      in: path
+      description: The targeted serial number for meter
+      required: true
+      schema:
+        $ref: '#/components/schemas/Manufacturer'
+    ConnectionPointId:
+      name: connectionPointId
+      in: path
+      description: The targeted connection point identififier
+      required: true
+      schema:
+        $ref: '#/components/schemas/ConnectionPointId'
+    ParticipantAssociationId:
+      name: participantAssociationId
+      in: path
+      description: The targeted connection point participant identifier
+      required: true
+      schema:
+        $ref: '#/components/schemas/ParticipantAssociationId'
+    MeterAssociationId:
+      name: meterAssociationId
+      in: path
+      description: The targeted connection point meter association identifier
+      required: true
+      schema:
+        $ref: '#/components/schemas/MeterAssociationId'
+    TransactionId:
+      name: transactionId
+      in: query
+      description: The transaction id for the request
+      required: true
+      schema:
+        $ref: '#/components/schemas/TransactionId'
+
+  responses:
+    ConnectionPointCreateSuccess:
+      description: The connection point has been successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConnectionPointCreateResponse'
+    ConnectionPointReadSuccess:
+      description: The connection point has been successfully retrieved
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConnectionPointReadResponse'
+    ParticipantCreateSuccess:
+      description: The connection point participant has been successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ParticipantCreateResponse'
+    ParticipantUpdateSuccess:
+      description: The connection point participant has been successfully updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ParticipantUpdateResponse'
+    MeterAssociationUpdateSuccess:
+      description: The connection point meter association has been successfully updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterAssociationUpdateResponse'
+    MeterAssociationCreateSuccess:
+      description: The connection point meter has been successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterAssociationCreateResponse'
+    MeterCreateSuccess:
+      description: The meter has been successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterCreateResponse'
+    MeterReadSuccess:
+      description: The meter has been successfully retrieved
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterReadResponse'
+    MeterUpdateSuccess:
+      description: The meter has been successfully retrieved
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterUpdateResponse'
+    BadRequest:
+      description: The request has not been processed, request contained bad or unexpected parameter
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: The request has not been processed, invalid message signature
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorised:
+      description: Request is not allowed for caller
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Request not found, request contained a parameter that could not be found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Throttled:
+      description: The meter data export has not been processed, Too many requests made
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: The server encountered an unexpected condition which prevented it from fulfilling the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: The request has not been processed, targeted system error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotAvailable:
+      description: The request has not been processed, the server is temporarally unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  requestBodies:
+    ConnectionPointCreate:
+      description: The meter data export
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ConnectionPointCreateRequest'
+    ParticipantCreate:
+      description: The connection point participant
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ParticipantCreateRequest'
+    ParticipantUpdate:
+      description: The connection point participant
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ParticipantUpdateRequest'
+    MeterAssociationUpdate:
+      description: The connection point meter association
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterAssociationUpdateRequest'
+    MeterAssociationCreate:
+      description: The connection point meter
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterAssociationCreateRequest'
+    MeterCreate:
+      description: The meter
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterCreateRequest'
+    MeterUpdate:
+      description: The meter
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MeterUpdateRequest'
+
+  schemas:
+    ConnectionPointCreateRequest:
+      type: object
+      required:
+        - connectionPoint
+      properties:
+        connectionPoint:
+          $ref: '#/components/schemas/ConnectionPointCreate'
+    ParticipantCreateRequest:
+      type: object
+      required:
+        - participant
+      properties:
+        participant:
+          $ref: '#/components/schemas/ParticipantCreate'
+    ParticipantUpdateRequest:
+      type: object
+      required:
+        - participant
+      properties:
+        participant:
+          $ref: '#/components/schemas/ParticipantUpdate'
+    MeterAssociationUpdateRequest:
+      type: object
+      required:
+        - meterAssociation
+      properties:
+        meterAssociation:
+          $ref: '#/components/schemas/MeterAssociationUpdate'
+    MeterAssociationCreateRequest:
+      type: object
+      required:
+        - meterAssociation
+      properties:
+        meterAssociation:
+          $ref: '#/components/schemas/MeterAssociationCreate'
+    MeterCreateRequest:
+      type: object
+      required:
+        - meter
+      properties:
+        meter:
+          $ref: '#/components/schemas/MeterCreate'
+    MeterUpdateRequest:
+      type: object
+      required:
+        - meter
+      properties:
+        meter:
+          $ref: '#/components/schemas/MeterUpdate'
+    ConnectionPointCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    ConnectionPointReadResponse:
+      type: object
+      required:
+        - transactionId
+        - connectionpoint
+      properties:
+        transactionId:
+          type: string
+        connectionPoint:
+          $ref: '#/components/schemas/ConnectionPointRead'
+
+    MeterReadResponse:
+      type: object
+      required:
+        - transactionId
+        - meter
+      properties:
+        transactionId:
+          type: string
+        meter:
+          $ref: '#/components/schemas/MeterRead'
+    ParticipantCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    ParticipantUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    MeterAssociationUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    MeterAssociationCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    MeterCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    MeterUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/TransactionIdResponse'
+    TransactionIdResponse:
+      type: object
+      description: Response for a put or post request on a connection point
+      required:
+        - transactionId
+      properties:
+        transactionId:
+          $ref: '#/components/schemas/TransactionId'
+    ErrorResponse:
+      type: object
+      description: Response container for the error scenario
+      required:
+        - transactionId
+        - error
+      properties:
+        transactionId:
+          type: string
+        error:
+          $ref: '#/components/schemas/ErrorDetail'
+    ErrorDetail:
+      type: object
+      description: Details for the error scenario
+      required:
+        - code
+        - reason
+        - message
+        - messageId
+      properties:
+        code:
+          type: integer
+          description: HTTP status code for the error scenario
+        reason:
+          $ref: '#/components/schemas/ErrorReason'
+        message:
+          type: string
+          description: Description of the error scenario
+        messageId:
+          $ref: '#/components/schemas/ErrorMessageIdentifier'
+    Commodity:
+      type: string
+      enum: [ELECTRICITY, GAS]
+    Manufacturer:
+      type: string
+      enum: [EDMI]
+    ConnectionPointId:
+      type: string
+    ParticipantAssociationId:
+      type: string
+    MeterAssociationId:
+      type: string
+    TransactionId:
+      type: string
+    ErrorReason:
+      type: string
+      description: The generalized reason for the specific error scenarios
+      enum: [API_BAD_PARAM, API_UNAUTHORISED, API_NOT_FOUND, API_SERVICE_NOT_AVAILABLE, API_ERROR, API_THROTTLED]
+    ErrorMessageIdentifier:
+      type: string
+      description: Error message identifier for specific error scenarios
+      enum: [API_MIP_MSGEID_00001, API_MIP_MSGEID_00002, API_MIP_MSGEID_00003, API_MIP_MSGEID_00004, API_MIP_MSGEID_00005,API_MIP_MSGEID_00006,API_MIP_MSGEID_00007, API_MIP_MSGEID_00008,API_MIP_MSGEID_00009, API_MIP_MSGEID_00010, API_MIP_MSGEID_00013, API_MIP_MSGEID_00018, API_MIP_MSGEID_00020, API_MIP_MSGEID_00021]
+
+    ConnectionPointRead:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ConnectionPoint'
+      properties:
+        participants:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ParticipantRead'
+        meterAssociations:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/MeterAssociationRead'
+    ConnectionPointCreate:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ConnectionPoint'
+      properties:
+        participants:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ParticipantCreate'
+        meterAssociations:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/MeterAssociationCreate'
+    ConnectionPoint:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - id
+        - participants
+        - meterAssociations
+      properties:
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+        id:
+          type: string
+          minLength: 1
+
+    ParticipantUpdate:
+      required:
+        - associationEnd
+        - associationType
+        - participantId
+        - associationStart
+        - associationStatus
+      allOf:
+        - $ref: '#/components/schemas/Participant'
+    ParticipantCreate:
+      required:
+        - participantAssociationId
+        - associationType
+        - participantId
+        - associationStart
+        - associationStatus
+      allOf:
+        - $ref: '#/components/schemas/Participant'
+      properties:
+        participantAssociationId:
+          type: string
+          minLength: 1
+    ParticipantRead:
+      required:
+        - participantAssociationId
+        - associationType
+        - participantId
+        - associationStart
+        - associationStatus
+      allOf:
+        - $ref: '#/components/schemas/Participant'
+      properties:
+        participantAssociationId:
+          type: string
+          minLength: 1
+
+    Participant:
+      type: object
+      properties:
+        associationType:
+          type: string
+          minLength: 1
+        participantId:
+          type: string
+          minLength: 1
+        associationStart:
+          type: string
+          format: 'date-time'
+        associationEnd:
+          type: string
+          format: 'date-time'
+        associationStatus:
+          type: string
+          minLength: 1
+
+    MeterAssociationUpdate:
+      type: object
+      required:
+        - manufacturer
+        - serialNumber
+        - installed
+        - removed
+      allOf:
+        - $ref: '#/components/schemas/MeterAssociation'
+
+    MeterAssociationCreate:
+      type: object
+      required:
+        - manufacturer
+        - serialNumber
+        - installed
+        - meterAssociationId
+      allOf:
+        - $ref: '#/components/schemas/MeterAssociation'
+      properties:
+        meterAssociationId:
+          type: string
+          minLength: 1
+
+    MeterAssociationRead:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/MeterAssociation'
+      properties:
+        meterAssociationId:
+          type: string
+          minLength: 1
+
+    MeterAssociation:
+      type: object
+      properties:
+        manufacturer:
+          type: string
+          minLength: 1
+        serialNumber:
+          type: string
+          minLength: 1
+        replacedSerialNumber:
+          type: string
+        replacedBySerialNumber:
+          type: string
+        installed:
+          type: string
+          format: 'date-time'
+        removed:
+          type: string
+          format: 'date-time'
+
+    MeterUpdate:
+      type: object
+      required:
+        - model
+        - supplyConnectionState
+        - metrologyMeasurements
+      allOf:
+        - $ref: '#/components/schemas/Meter'
+
+    MeterCreate:
+      type: object
+      required:
+        - serialNumber
+        - model
+        - supplyConnectionState
+        - metrologyMeasurements
+      allOf:
+        - $ref: '#/components/schemas/Meter'
+      properties:
+        serialNumber:
+          type: string
+          minLength: 1
+
+    MeterRead:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Meter'
+      properties:
+        lastCommunicated:
+          type: string
+          format: 'date-time'
+        serialNumber:
+          type: string
+          minLength: 1
+        manufacturer:
+          type: string
+          minLength: 1
+        commodity:
+          $ref: '#/components/schemas/Commodity'
+
+    Meter:
+      type: object
+      properties:
+        model:
+          type: string
+        supplyConnectionState:
+          $ref: '#/components/schemas/SupplyConnectionState'
+        metrologyMeasurements:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Measurement'
+
+    SupplyConnectionState:
+      type: string
+      enum: [CONNECTED, DISCONNECTED]
+
+    Measurement:
+      type: object
+      required:
+        - uom
+        - registers
+      properties:
+        uom:
+          type: string
+          minLength: 1
+        registers:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/Register'
+    Register:
+      type: object
+      required:
+        - registerId
+        - registerType
+        - period
+        - configurationStart
+        - dataStream
+        - dataStreamClassifier
+      properties:
+        registerId:
+          type: string
+          minLength: 1
+        registerType:
+          type: string
+          enum: [CUMULATIVE, INSTANTANEOUS, FIXED_TIME_INTERVAL]
+        period:
+          type: string
+          enum: [NA, 1MIN, 2MIN, 3MIN, 5MIN, 10MIN, 30MIN]
+        configurationStart:
+          type: string
+          format: 'date-time'
+        configurationEnd:
+          type: string
+          format: 'date-time'
+        dataStream:
+          $ref: '#/components/schemas/DataStream'
+        dataStreamClassifier:
+          $ref: '#/components/schemas/DataStreamClassifier'
+    DataStream:
+      type: object
+      required:
+        - dataStreamID
+        - description
+        - status
+      properties:
+        dataStreamID:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+    DataStreamClassifier:
+      type: object
+      required:
+        - translationFactor
+        - payloadType
+        - channelName
+        - rateNumber
+        - value
+        - channelSource
+        - intervalLength
+      properties:
+        translationFactor:
+          type: number
+        payloadType:
+          type: string
+          minLength: 1
+        channelName:
+          type: string
+          minLength: 1
+        rateNumber:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+        channelSource:
+          type: string
+          minLength: 1
+        intervalLength:
+          type: string
+          minLength: 1
